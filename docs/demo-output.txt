@@ -1,0 +1,34 @@
+Mock notifier fails 25% of requests and loses 10% of responses after delivering.
+
+━━ 1. Registration returns immediately, confirmation is sent later
+  ✔ alice registered (HTTP 201) in 3ms
+  ✔ response says confirmation is queued, not sent
+
+━━ 2. Failed registrations produce no confirmation
+  ✔ alice registering twice is rejected (409 already_registered)
+  ✔ dave rejected because workshop is full (409 full)
+  ✔ exactly 3 confirmations queued (got 3)
+  ✔ no confirmation exists for dave
+
+━━ 3. Retries get every confirmation through an unreliable notifier
+  ✔ all confirmations delivered
+  3 confirmations took 4 attempts in total
+
+━━ 4. Backend crashes after saving registrations, confirmations still arrive
+  ✔ notifier is down: 3 confirmations waiting
+  API killed with SIGKILL (no graceful shutdown)
+  API restarted, notifier back up
+  ✔ all 3 confirmations delivered after restart
+
+━━ 5. Cancellation notifies everyone; one bad recipient does not block others
+  ✔ cancellation queued for alice, bob, carol
+  ✔ alice and carol notified while bob keeps failing
+  ✔ bob still pending after 4 attempt(s)
+  ✔ bob notified once his address works again
+  ✔ registering for a cancelled workshop is rejected
+
+━━ 6. No duplicates reached members
+  ✔ 9 notifications owed, 9 unique deliveries received
+  3 retried request(s) were recognised as duplicates via the idempotency key and dropped
+
+All checks passed.

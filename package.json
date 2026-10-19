@@ -1,0 +1,16 @@
+{
+  "name": "workshop-notifications",
+  "version": "1.0.0",
+  "description": "Workshop registration service with reliable notification delivery (transactional outbox + retries + idempotency).",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --no-warnings src/server.js",
+    "mock": "node --no-warnings mock/notifier.js",
+    "demo": "node --no-warnings scripts/demo.js",
+    "test": "node --no-warnings scripts/demo.js"
+  }
+}
